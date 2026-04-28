@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { User, Phone, Send, IdCard, Bike, CheckCircle2 } from "lucide-react";
+import {
+  User,
+  Phone,
+  Send,
+  IdCard,
+  Bike,
+  CheckCircle2,
+  AlertCircle,
+  X,
+} from "lucide-react";
 import { RIDER_API_URL } from "@/services/apiConfig";
 
 interface FormData {
@@ -35,7 +44,7 @@ const InputField: React.FC<InputFieldProps> = ({
     <div className="group">
       <label
         htmlFor={id}
-        className="block text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-2"
+        className="block text-xs font-semibold uppercase tracking-widest text-zinc-500 mb-2"
       >
         {label}
       </label>
@@ -46,7 +55,7 @@ const InputField: React.FC<InputFieldProps> = ({
       >
         <span
           className={`mr-3 transition-colors duration-200 ${
-            focused ? "text-orange-500" : "text-zinc-300"
+            focused ? "text-orange-500" : "text-zinc-500"
           }`}
         >
           {icon}
@@ -61,7 +70,7 @@ const InputField: React.FC<InputFieldProps> = ({
           onBlur={() => setFocused(false)}
           placeholder={placeholder}
           required
-          className="flex-1 bg-transparent text-zinc-900 placeholder-zinc-300 text-base font-medium focus:outline-none"
+          className="flex-1 bg-transparent text-zinc-900 placeholder-zinc-500 text-base font-medium focus:outline-none"
         />
         {value && (
           <CheckCircle2
@@ -82,6 +91,7 @@ export default function ZomatoRiderForm() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorModal, setErrorModal] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -98,9 +108,6 @@ export default function ZomatoRiderForm() {
     try {
       setLoading(true);
 
-      // 🔥 Auto generate token
-      const token = Math.random().toString(36).substring(2, 10);
-
       const res = await fetch(RIDER_API_URL, {
         method: "POST",
         headers: {
@@ -110,7 +117,6 @@ export default function ZomatoRiderForm() {
           feId: formData.feId,
           fullName: formData.fullName,
           phone: formData.phone,
-          token, // hidden field
         }),
       });
 
@@ -122,7 +128,7 @@ export default function ZomatoRiderForm() {
 
       setSubmitted(true);
     } catch (error: any) {
-      alert(error.message);
+      setErrorModal(error.message);
     } finally {
       setLoading(false);
     }
@@ -214,6 +220,31 @@ export default function ZomatoRiderForm() {
           </form>
         </div>
       </div>
+
+      {/* Error Modal */}
+      {errorModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl relative transform transition-all">
+            <div className="flex flex-col items-center text-center mt-2">
+              <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-4">
+                <AlertCircle size={24} className="text-red-500" />
+              </div>
+              <h3 className="text-lg font-bold text-zinc-900 mb-2">
+                Submission Failed
+              </h3>
+              <p className="text-sm text-zinc-500 mb-6 leading-relaxed">
+                {errorModal}
+              </p>
+              <button
+                onClick={() => setErrorModal(null)}
+                className="w-full py-3 bg-zinc-100 bg-zinc-200 hover:bg-zinc-300 text-zinc-900 font-semibold rounded-xl transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
