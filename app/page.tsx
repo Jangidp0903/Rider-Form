@@ -90,12 +90,12 @@ export default function ZomatoRiderForm() {
     phone: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [token, setToken] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorModal, setErrorModal] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -126,6 +126,8 @@ export default function ZomatoRiderForm() {
         throw new Error(data.error || "Something went wrong");
       }
 
+      setToken(data.data.token);
+
       setSubmitted(true);
     } catch (error: any) {
       setErrorModal(error.message);
@@ -137,17 +139,34 @@ export default function ZomatoRiderForm() {
   const handleReset = () => {
     setFormData({ feId: "", fullName: "", phone: "" });
     setSubmitted(false);
+    setToken(null);
   };
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <CheckCircle2 size={40} className="text-green-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold">Application Submitted</h2>
-          <button onClick={handleReset} className="mt-4 text-orange-500">
-            Submit Again
-          </button>
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50 px-4">
+        <div className="bg-white border border-zinc-200 rounded-3xl p-10 sm:p-12 text-center max-w-md w-full shadow-sm">
+          <CheckCircle2 size={48} className="text-green-500 mx-auto mb-5" />
+
+          <h2 className="text-2xl font-bold mb-2">Application Submitted</h2>
+
+          <p className="text-zinc-500 text-sm mb-8">
+            Your request has been received successfully.
+          </p>
+
+          {/* 🔥 TOKEN DISPLAY */}
+          <div className="bg-orange-50 border border-orange-200 rounded-2xl py-6 mb-8">
+            <p className="text-xs text-zinc-500 mb-2 tracking-wide">
+              Your Token Number
+            </p>
+            <p className="text-5xl font-extrabold text-orange-500 tracking-tight">
+              #{token}
+            </p>
+          </div>
+
+          <p className="text-sm text-zinc-400 leading-relaxed">
+            Please wait for your turn. Our team will contact you shortly.
+          </p>
         </div>
       </div>
     );
