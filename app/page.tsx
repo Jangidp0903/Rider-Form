@@ -148,7 +148,7 @@ export default function ZomatoRiderForm() {
         <div className="bg-white border border-zinc-200 rounded-3xl p-10 sm:p-12 text-center max-w-md w-full shadow-sm">
           <CheckCircle2 size={48} className="text-green-500 mx-auto mb-5" />
 
-          <h2 className="text-2xl font-bold mb-2">Application Submitted</h2>
+          <h2 className="text-2xl font-bold mb-2">Form Submitted</h2>
 
           <p className="text-zinc-500 text-sm mb-8">
             Your request has been received successfully.
@@ -184,10 +184,10 @@ export default function ZomatoRiderForm() {
               </div>
               <div>
                 <h1 className="font-semibold uppercase tracking-widest text-orange-500 mb-1">
-                  Delivery Partner Program
+                  Bike Rentals by Zomato
                 </h1>
                 <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
-                  Complete the form below to begin your journey.
+                  Rent your bike, start earning, and move faster every day.
                 </p>
               </div>
             </div>
