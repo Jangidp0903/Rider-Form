@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import axios from "axios";
 import {
   User,
   Phone,
@@ -108,29 +109,16 @@ export default function ZomatoRiderForm() {
     try {
       setLoading(true);
 
-      const res = await fetch(RIDER_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          feId: formData.feId,
-          fullName: formData.fullName,
-          phone: formData.phone,
-        }),
+      const res = await axios.post(RIDER_API_URL, {
+        feId: formData.feId,
+        fullName: formData.fullName,
+        phone: formData.phone,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Something went wrong");
-      }
-
-      setToken(data.data.token);
-
+      setToken(res.data.data.token);
       setSubmitted(true);
     } catch (error: any) {
-      setErrorModal(error.message);
+      setErrorModal(error.response?.data?.error || error.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
