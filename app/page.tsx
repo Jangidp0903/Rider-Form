@@ -11,84 +11,25 @@ import {
   CheckCircle2,
   AlertCircle,
   X,
+  MapPin,
 } from "lucide-react";
 import { RIDER_API_URL } from "@/services/apiConfig";
+import InputField from "@/components/InputField";
+import CustomSelect from "@/components/CustomSelect";
 
 interface FormData {
   feId: string;
   fullName: string;
   phone: string;
+  hubName: string;
 }
-
-interface InputFieldProps {
-  id: keyof FormData;
-  label: string;
-  type: string;
-  placeholder: string;
-  icon: React.ReactNode;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-const InputField: React.FC<InputFieldProps> = ({
-  id,
-  label,
-  type,
-  placeholder,
-  icon,
-  value,
-  onChange,
-}) => {
-  const [focused, setFocused] = useState(false);
-
-  return (
-    <div className="group">
-      <label
-        htmlFor={id}
-        className="block text-xs font-semibold uppercase tracking-widest text-zinc-500 mb-2"
-      >
-        {label}
-      </label>
-      <div
-        className={`flex items-center border-b-2 pb-3 transition-colors duration-200 ${
-          focused ? "border-orange-500" : "border-zinc-200"
-        }`}
-      >
-        <span
-          className={`mr-3 transition-colors duration-200 ${
-            focused ? "text-orange-500" : "text-zinc-500"
-          }`}
-        >
-          {icon}
-        </span>
-        <input
-          type={type}
-          id={id}
-          name={id}
-          value={value}
-          onChange={onChange}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          placeholder={placeholder}
-          required
-          className="flex-1 bg-transparent text-zinc-900 placeholder-zinc-500 text-base font-medium focus:outline-none"
-        />
-        {value && (
-          <CheckCircle2
-            size={16}
-            className="text-orange-500 ml-2 flex-shrink-0"
-          />
-        )}
-      </div>
-    </div>
-  );
-};
 
 export default function ZomatoRiderForm() {
   const [formData, setFormData] = useState<FormData>({
     feId: "",
     fullName: "",
     phone: "",
+    hubName: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [token, setToken] = useState<number | null>(null);
@@ -113,19 +54,22 @@ export default function ZomatoRiderForm() {
         feId: formData.feId,
         fullName: formData.fullName,
         phone: formData.phone,
+        hubName: formData.hubName,
       });
 
       setToken(res.data.data.token);
       setSubmitted(true);
     } catch (error: any) {
-      setErrorModal(error.response?.data?.error || error.message || "Something went wrong");
+      setErrorModal(
+        error.response?.data?.error || error.message || "Something went wrong",
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleReset = () => {
-    setFormData({ feId: "", fullName: "", phone: "" });
+    setFormData({ feId: "", fullName: "", phone: "", hubName: "" });
     setSubmitted(false);
     setToken(null);
   };
@@ -163,7 +107,7 @@ export default function ZomatoRiderForm() {
   return (
     <div className="h-screen bg-zinc-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-lg mx-auto">
-        <div className="bg-white border border-2 border-zinc-200 rounded-2xl overflow-hidden">
+        <div className="bg-white border border-2 border-zinc-200 rounded-2xl">
           {/* Header panel */}
           <div className="px-8 pt-10 pb-8 border-b border-zinc-100">
             <div className="flex items-start gap-5">
@@ -183,25 +127,45 @@ export default function ZomatoRiderForm() {
 
           {/* Form body */}
           <form onSubmit={handleSubmit} className="px-8 py-8 space-y-8">
-            <InputField
-              id="feId"
-              label="FE ID"
-              type="text"
-              placeholder="e.g. FE12345678"
-              icon={<IdCard size={18} />}
-              value={formData.feId}
-              onChange={handleChange}
+            <CustomSelect
+              label="Hub Name"
+              placeholder="Select Hub"
+              icon={<MapPin size={18} />}
+              value={formData.hubName}
+              onChange={(val) =>
+                setFormData((prev) => ({ ...prev, hubName: val }))
+              }
+              options={[
+                "Lawrence road",
+                "Uttam Nagar",
+                "Peeragarhi",
+                "Lado Sarai",
+                "Okhla",
+                "Noida 73",
+              ]}
             />
 
-            <InputField
-              id="fullName"
-              label="Full Name"
-              type="text"
-              placeholder="e.g. Arjun Sharma"
-              icon={<User size={18} />}
-              value={formData.fullName}
-              onChange={handleChange}
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              <InputField
+                id="feId"
+                label="FE ID"
+                type="text"
+                placeholder="e.g. FE12345678"
+                icon={<IdCard size={18} />}
+                value={formData.feId}
+                onChange={handleChange}
+              />
+
+              <InputField
+                id="fullName"
+                label="Full Name"
+                type="text"
+                placeholder="e.g. Arjun Sharma"
+                icon={<User size={18} />}
+                value={formData.fullName}
+                onChange={handleChange}
+              />
+            </div>
 
             <InputField
               id="phone"
