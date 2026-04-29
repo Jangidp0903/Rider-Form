@@ -129,20 +129,19 @@ export default function ZomatoRiderForm() {
           <form onSubmit={handleSubmit} className="px-8 py-8 space-y-8">
             <CustomSelect
               label="Hub Name"
-              placeholder="Select your nearest hub"
+              placeholder="Select Hub"
               icon={<MapPin size={18} />}
               value={formData.hubName}
               onChange={(val) =>
                 setFormData((prev) => ({ ...prev, hubName: val }))
               }
               options={[
-                "Delhi Okhla Hub",
-                "Mumbai Andheri Hub",
-                "Bangalore Koramangala Hub",
-                "Chennai Adyar Hub",
-                "Kolkata Salt Lake Hub",
-                "Pune Hinjewadi Hub",
-                "Hyderabad Gachibowli Hub",
+                "Lawrence road",
+                "Uttam Nagar",
+                "Peeragarhi",
+                "Lado Sarai",
+                "Okhla",
+                "Noida 73",
               ]}
             />
 
